@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="static/artist.css">
+  <title>Artist</title>
+</head>
+<body>  
+  <div class="content">
+
+
+    {{range .}}
+
+    <div>
+    <table>
+      <tr>
+        <td> <img src="{{.Image}}" alt="{{.Name}}"></td>
+        <td>
+          <b>Name:</b> {{.Name}}
+          <br>
+          <b>Members:</b> {{range .Members}} <br> {{.}} {{end}}
+          <br>
+          <b>Creationd Date:</b> {{.CreationDate}}
+          <br>
+          <b>First Album:</b> {{.FirstAlbum}}
+          </td>
+      </tr> 
+    </table>
+    <br>
+
+    <table border="2px">
+      <tr>
+        <th>Concert Location</th>
+        <th>Concert Dates</th>
+      </tr>  
+     {{ range $key, $value := .Concerts }}
+      <tr> 
+        <td> {{$key}} </td>
+        <td> {{range $value}} {{.}} <br> {{end}} </td>
+      </tr>
+      {{end}}
+    </table>
+    <div>
+    <br>
+    <hr>
+    <br>
+
+
+    {{end}}
+
+
+ 
+    <button type="button" style="border-radius:5px;height:30px;width:100px" onclick="location.href = '/';">Go Back</button>
+   </div>
+</body>
+</html>
