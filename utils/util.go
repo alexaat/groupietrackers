@@ -1,5 +1,6 @@
-package main
+package handler
 
+/*
 import (
 	"encoding/json"
 	"net/http"
@@ -212,3 +213,4 @@ func removeSuffixes(data string) string {
 	data = strings.TrimSuffix(data, "- location")
 	return strings.TrimSpace(data)
 }
+*/

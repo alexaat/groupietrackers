@@ -1,4 +1,4 @@
-package main
+package handler
 
 /*The "Groupies" struct contains "Artists", "Location", "Dates", and "Relation".
 For the "Artists" , "ArtistNames" field, we use a field tag `json:"artists"` to help Go examine which field in the JSON is mapped to this field in the struct.

@@ -1,5 +1,7 @@
-package main
+package handler
 
+
+/*
 import (
 	"html/template"
 	"net/http"
@@ -128,3 +130,4 @@ func errorHandler(w http.ResponseWriter, code int, message string) {
 		http.Error(w, message, code)
 	}
 }
+*/
