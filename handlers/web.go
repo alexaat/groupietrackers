@@ -132,12 +132,12 @@ func ErrorHandler(w http.ResponseWriter, code int, message string, templates emb
 	w.WriteHeader(code)
 	tmpl, err := template.ParseFS(templates, "templates/error.html")
 	if err != nil {
-		http.Error(w, message, code)
+		http.Error(w, message+"Template not found", code)
 		return
 	}
 	err = tmpl.Execute(w, models.Error{Message: message, Code: code})
 	if err != nil {
-		http.Error(w, message, code)
+		http.Error(w, message+"Template Execute Fail", code)
 	}
 
 	// w.WriteHeader(code)
