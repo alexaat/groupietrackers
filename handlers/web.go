@@ -10,6 +10,8 @@ import (
 
 const portNumber = ":8080"
 
+//tmpl, err := template.ParseFS(assets, "templates/index.html")
+
 func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<h3>Artist Handler</h3>")
 	/*
@@ -79,7 +81,8 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	*/
 }
 
-func searchHandler(w http.ResponseWriter, r *http.Request) {
+func SearchHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "<h3>Search Handler</h3>")
 	/*
 		if r.Method != "POST" {
 			errorHandler(w, http.StatusBadRequest, "400 BAD REQUEST")
@@ -122,7 +125,8 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	*/
 }
 
-func errorHandler(w http.ResponseWriter, code int, message string) {
+func ErrorHandler(w http.ResponseWriter, code int, message string) {
+	fmt.Fprintf(w, "<h3>Error Handler</h3>")
 	/*
 		w.WriteHeader(code)
 		template, err := template.ParseFiles("templates/error.html")
