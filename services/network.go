@@ -7,7 +7,7 @@ import (
 
 var api = "https://groupietrackers.herokuapp.com/api"
 
-func getData(url string) (string, error) {
+func GetData(url string) (string, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", err

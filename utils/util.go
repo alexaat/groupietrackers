@@ -1,12 +1,16 @@
 package handler
 
-/*
+
 import (
 	"encoding/json"
 	"net/http"
 	"strconv"
 	"strings"
+	api "groupietrackers/api"
+	services "groupietrackers/services"
 )
+
+
 
 func formatLocation(location string) string {
 	location = strings.Replace(location, "-", ", ", -1)
@@ -26,109 +30,109 @@ func formatLocations(data map[string][]string) map[string][]string {
 }
 
 func createSearchMaster() map[string][]int {
-	display = make(map[string][]int)
-	for _, artist := range bands {
+	api.DisplayInstance = make(map[string][]int)
+	for _, artist := range api.BandsInstance {
 		// artist/band
 		artistNameDisplay := artist.Name + " - artist/band"
-		addToMap(display, artistNameDisplay, artist.ID)
+		addToMap(api.DisplayInstance, artistNameDisplay, artist.ID)
 
 		// members
 		for _, member := range artist.Members {
 			memberNameDisplay := member + " - member"
-			addToMap(display, memberNameDisplay, artist.ID)
+			addToMap(api.DisplayInstance, memberNameDisplay, artist.ID)
 
 		}
 		// creation date
 		creationDate := strconv.Itoa(artist.CreationDate)
 		creationDateDisplay := creationDate + " - creation date"
-		addToMap(display, creationDateDisplay, artist.ID)
+		addToMap(api.DisplayInstance, creationDateDisplay, artist.ID)
 
 		// first album date
 		firstAlbumDate := artist.FirstAlbum
 		firstAlbumDateDisplay := firstAlbumDate + " - first album date"
-		addToMap(display, firstAlbumDateDisplay, artist.ID)
+		addToMap(api.DisplayInstance, firstAlbumDateDisplay, artist.ID)
 
 		// locations
 		for key := range artist.Concerts {
 			locationDisplay := key + " - location"
-			addToMap(display, locationDisplay, artist.ID)
+			addToMap(api.DisplayInstance, locationDisplay, artist.ID)
 		}
 	}
-	return display
+	return api.DisplayInstance
 }
 
 func fetchData(c chan Error) {
-	data, err := getData(api)
+	data, err := services.GetData(api)
 	if err != nil {
 		c <- make500Error(err.Error())
 		return
 	}
-	err = json.Unmarshal([]byte(data), &groupies)
+	err = json.Unmarshal([]byte(data), &api.GroupiesInstance)
 	if err != nil {
 		c <- make500Error(err.Error())
 		return
 	}
 	// Get bands
-	artists, err := getData(groupies.Artists)
+	artists, err := services.GetData(api.GroupiesInstance.Artists)
 	if err != nil {
 		c <- make500Error(err.Error())
 		return
 	}
-	err = json.Unmarshal([]byte(artists), &bands)
+	err = json.Unmarshal([]byte(artists), &api.BandsInstance)
 	if err != nil {
 		c <- make500Error(err.Error())
 		return
 	}
 	// Get Relations
 	isDataAvailable := true
-	relat, err := getData(groupies.Relation)
+	relat, err := services.GetData(api.GroupiesInstance.Relation)
 	if err != nil {
 		isDataAvailable = false
 	}
 	if isDataAvailable {
-		err = json.Unmarshal([]byte(relat), &relations)
+		err = json.Unmarshal([]byte(relat), &api.RelationsInstance)
 		if err != nil {
 			isDataAvailable = false
 		}
 	}
-	if len(relations.Index) == 0 {
+	if len(api.RelationsInstance.Index) == 0 {
 		isDataAvailable = false
 	}
 
 	if isDataAvailable {
 		// Save relations map to artists
-		for _, item := range relations.Index {
-			bands[item.ID-1].Concerts = formatLocations(item.DatesLocations)
+		for _, item := range api.RelationsInstance.Index {
+			api.BandsInstance[item.ID-1].Concerts = formatLocations(item.DatesLocations)
 		}
 		c <- Error{Code: http.StatusOK, Message: ""}
 		return
 	}
 	// Get Locations if not avalable
-	locat, err := getData(groupies.Locations)
+	locat, err := services.GetData(api.GroupiesInstance.Locations)
 	if err != nil {
 		c <- make500Error(err.Error())
 		return
 	}
-	err = json.Unmarshal([]byte(locat), &locations)
+	err = json.Unmarshal([]byte(locat), &api.LocationsInstance)
 	if err != nil {
 		c <- make500Error(err.Error())
 		return
 	}
 	// Get Dates
-	d, err := getData(groupies.Dates)
+	d, err := services.GetData(api.GroupiesInstance.Dates)
 	if err != nil {
 		c <- make500Error(err.Error())
 		return
 	}
-	err = json.Unmarshal([]byte(d), &dates)
+	err = json.Unmarshal([]byte(d), &api.DatesInstance)
 	if err != nil {
 		c <- make500Error(err.Error())
 		return
 	}
 	// Construct map using locations and dates
-	for index := range bands {
+	for index := range api.BandsInstance {
 		m := constructConcerts(index + 1)
-		bands[index].Concerts = m
+		api.BandsInstance[index].Concerts = m
 	}
 
 	c <- Error{Code: http.StatusOK, Message: ""}
@@ -171,7 +175,7 @@ func constructConcerts(id int) map[string][]string {
 	result := make(map[string][]string)
 
 	locationsArr := []string{}
-	for _, location := range locations.Index {
+	for _, location := range api.LocationsInstance.Index {
 		if location.ID == id {
 			locationsArr = location.Locations
 			break
@@ -179,7 +183,7 @@ func constructConcerts(id int) map[string][]string {
 	}
 
 	datesArr := []string{}
-	for _, dates := range dates.Index {
+	for _, dates := range api.DatesInstance.Index {
 		if dates.ID == id {
 			datesArr = dates.Dates
 		}
@@ -214,4 +218,3 @@ func removeSuffixes(data string) string {
 	return strings.TrimSpace(data)
 }
 
-*/
