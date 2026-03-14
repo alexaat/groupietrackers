@@ -1,16 +1,14 @@
 package handler
 
-
 import (
 	"encoding/json"
+	api "groupietrackers/api"
+	models "groupietrackers/models"
+	services "groupietrackers/services"
 	"net/http"
 	"strconv"
 	"strings"
-	api "groupietrackers/api"
-	services "groupietrackers/services"
 )
-
-
 
 func formatLocation(location string) string {
 	location = strings.Replace(location, "-", ", ", -1)
@@ -61,8 +59,8 @@ func createSearchMaster() map[string][]int {
 	return api.DisplayInstance
 }
 
-func fetchData(c chan Error) {
-	data, err := services.GetData(api)
+func fetchData(c chan models.Error) {
+	data, err := services.GetData(services.API)
 	if err != nil {
 		c <- make500Error(err.Error())
 		return
@@ -104,7 +102,7 @@ func fetchData(c chan Error) {
 		for _, item := range api.RelationsInstance.Index {
 			api.BandsInstance[item.ID-1].Concerts = formatLocations(item.DatesLocations)
 		}
-		c <- Error{Code: http.StatusOK, Message: ""}
+		c <- models.Error{Code: http.StatusOK, Message: ""}
 		return
 	}
 	// Get Locations if not avalable
@@ -135,11 +133,11 @@ func fetchData(c chan Error) {
 		api.BandsInstance[index].Concerts = m
 	}
 
-	c <- Error{Code: http.StatusOK, Message: ""}
+	c <- models.Error{Code: http.StatusOK, Message: ""}
 }
 
-func make500Error(message string) Error {
-	return Error{Code: http.StatusInternalServerError, Message: "500 INTERNAL SERVER ERROR: " + message}
+func make500Error(message string) models.Error {
+	return models.Error{Code: http.StatusInternalServerError, Message: "500 INTERNAL SERVER ERROR: " + message}
 }
 
 func intsToUrl(data []int) string {
@@ -217,4 +215,3 @@ func removeSuffixes(data string) string {
 	data = strings.TrimSuffix(data, "- location")
 	return strings.TrimSpace(data)
 }
-

@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-var api = "https://groupietrackers.herokuapp.com/api"
+var API = "https://groupietrackers.herokuapp.com/api"
 
 func GetData(url string) (string, error) {
 	resp, err := http.Get(url)
