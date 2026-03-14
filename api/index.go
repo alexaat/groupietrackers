@@ -2,13 +2,15 @@ package handler
 
 import (
 	"embed"
-	"fmt"
 	"net/http"
+	handlers "groupietrackers/handlers"
 )
 
 //go:embed templates/*
 var templates embed.FS
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "<h1>Main Page</h1>")
+	if r.URL.Path == "/" {
+		handlers.ArtistHandler(w, r)
+	}
 }
