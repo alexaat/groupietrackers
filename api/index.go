@@ -2,8 +2,19 @@ package handler
 
 import (
 	"embed"
-	"net/http"
 	handlers "groupietrackers/handlers"
+	models "groupietrackers/models"
+	"net/http"
+)
+
+var (
+	GroupiesInstance     models.Groupies
+	BandsInstance        []models.Artist
+	LocationsInstance    models.Locations
+	DatesInstance        models.Dates
+	RelationsInstance    models.Relations
+	SearchObjectInstance models.SearchObject
+	DisplayInstance      map[string][]int
 )
 
 //go:embed templates/*
@@ -11,8 +22,11 @@ var templates embed.FS
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
-	case "/" : handlers.ArtistHandler(w, r)
-	case "/search" : handlers.SearchHandler(w, r)
-	default: handlers.ErrorHandler(w, http.StatusNotFound, "404 Not Found")
+	case "/":
+		handlers.ArtistHandler(w, r)
+	case "/search":
+		handlers.SearchHandler(w, r)
+	default:
+		handlers.ErrorHandler(w, http.StatusNotFound, "404 Not Found")
 	}
 }

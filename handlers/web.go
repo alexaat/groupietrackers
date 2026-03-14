@@ -78,7 +78,8 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errorHandler(w, http.StatusInternalServerError, "500 SERVER ERROR")
 		}
-	*/
+			*/
+	
 }
 
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
