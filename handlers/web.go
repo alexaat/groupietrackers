@@ -2,15 +2,17 @@ package handler
 
 import (
 	"fmt"
+	"html/template"
+
 	// "html/template"
 	"net/http"
 	// "strconv"
 	// "strings"
+	"embed"
+	models "groupietrackers/models"
 )
 
-const portNumber = ":8080"
-
-//tmpl, err := template.ParseFS(assets, "templates/index.html")
+//const portNumber = ":8080"
 
 func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<h3>Artist Handler</h3>")
@@ -78,8 +80,8 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			errorHandler(w, http.StatusInternalServerError, "500 SERVER ERROR")
 		}
-			*/
-	
+	*/
+
 }
 
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
@@ -126,18 +128,27 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	*/
 }
 
-func ErrorHandler(w http.ResponseWriter, code int, message string) {
-	fmt.Fprintf(w, "<h3>Error Handler</h3>")
-	/*
-		w.WriteHeader(code)
-		template, err := template.ParseFiles("templates/error.html")
-		if err != nil {
-			http.Error(w, message, code)
-			return
-		}
-		err = template.Execute(w, Error{Message: message, Code: code})
-		if err != nil {
-			http.Error(w, message, code)
-		}
-	*/
+func ErrorHandler(w http.ResponseWriter, code int, message string, templates embed.FS) {
+	w.WriteHeader(code)
+	tmpl, err := template.ParseFS(templates, "templates/error.html")
+	if err != nil {
+		http.Error(w, message, code)
+		return
+	}
+	err = tmpl.Execute(w, models.Error{Message: message, Code: code})
+	if err != nil {
+		http.Error(w, message, code)
+	}
+
+	// w.WriteHeader(code)
+	// template, err := template.ParseFiles("templates/error.html")
+	// if err != nil {
+	// 	http.Error(w, message, code)
+	// 	return
+	// }
+	// err = template.Execute(w, Error{Message: message, Code: code})
+	// if err != nil {
+	// 	http.Error(w, message, code)
+	// }
+
 }
