@@ -12,6 +12,7 @@
     {
       "src": "/(.*)",
       "dest": "/api/index.go"
-    }
+    },
+    { "src": "/css/(.*)", "dest": "/css/$1" }
   ]
 }
