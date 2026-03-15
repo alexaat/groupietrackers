@@ -2,7 +2,7 @@ package handler
 
 import (
 	"encoding/json"
-	api "groupietrackers/cmd/api"
+	api "groupietrackers/api"
 	models "groupietrackers/models"
 	services "groupietrackers/services"
 	"net/http"
