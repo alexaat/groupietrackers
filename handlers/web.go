@@ -34,7 +34,7 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request, templates embed.FS) {
 		return
 	}
 
-	fmt.Fprintf(w, "OK: %v", models.BandsInstance)
+	//fmt.Fprintf(w, "OK: %v", models.BandsInstance)
 
 	path := r.URL.Path
 	if path != "/" {
