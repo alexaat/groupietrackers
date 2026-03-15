@@ -17,7 +17,7 @@ var (
 	DisplayInstance      map[string][]int
 )
 
-//go:embed templates/*
+//go:embed api/templates/*
 var templates embed.FS
 
 func Handler(w http.ResponseWriter, r *http.Request) {
