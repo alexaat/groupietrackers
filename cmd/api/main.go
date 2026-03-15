@@ -2,6 +2,7 @@ package handler
 
 import (
 	"embed"
+	"fmt"
 	handlers "groupietrackers/handlers"
 	models "groupietrackers/models"
 	"net/http"
@@ -23,7 +24,9 @@ var templates embed.FS
 func Handler(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
 	case "/":
-		handlers.ArtistHandler(w, r, templates)
+		//handlers.ArtistHandler(w, r, templates)
+		fmt.Fprintf(w, "<h1>Main Page</h1>")
+
 	case "/search":
 		handlers.SearchHandler(w, r)
 	default:
