@@ -6,8 +6,6 @@ import (
 	"net/http"
 )
 
-
-
 //go:embed templates/*
 var templates embed.FS
 
