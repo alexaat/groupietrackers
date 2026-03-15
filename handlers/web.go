@@ -4,7 +4,6 @@ import (
 	"embed"
 	"fmt"
 	models "groupietrackers/models"
-
 	util "groupietrackers/utils"
 	"html/template"
 	"net/http"
@@ -12,19 +11,7 @@ import (
 	"strings"
 )
 
-//const portNumber = ":8080"
-
 func ArtistHandler(w http.ResponseWriter, r *http.Request, templates embed.FS) {
-
-	// tmpl, err := template.ParseFS(templates, "templates/index.html")
-	// if err != nil {
-	// 	http.Error(w, "Template Parse Fail", http.StatusInternalServerError)
-	// 	return
-	// }
-	// err = tmpl.Execute(w, nil)
-	// if err != nil {
-	// 	http.Error(w, "Template Execute Fail", http.StatusInternalServerError)
-	// }
 
 	c := make(chan models.Error)
 	go util.FetchData(c)
@@ -33,9 +20,6 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request, templates embed.FS) {
 		ErrorHandler(w, e.Code, e.Message, templates)
 		return
 	}
-
-	//fmt.Fprintf(w, "OK: %v", models.BandsInstance)
-
 	path := r.URL.Path
 	if path != "/" {
 
@@ -91,11 +75,6 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request, templates embed.FS) {
 
 		return
 	}
-
-	// t, err := template.ParseFiles("templates/index.html")
-	// if err != nil {
-	// 	ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND", templates)
-	// }
 
 	t, err := template.ParseFS(templates, "templates/index.html")
 	if err != nil {
