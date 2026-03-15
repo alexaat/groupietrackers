@@ -15,7 +15,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		handlers.ArtistHandler(w, r, templates)
 	case "/search":
 		handlers.SearchHandler(w, r)
-		// default:
-		// 	handlers.ErrorHandler(w, http.StatusNotFound, "404 Not Found", templates)
+	default:
+		handlers.ErrorHandler(w, http.StatusNotFound, "404 Not Found", templates)
 	}
 }
