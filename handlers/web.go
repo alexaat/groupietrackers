@@ -14,8 +14,17 @@ import (
 
 //const portNumber = ":8080"
 
-func ArtistHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "<h3>Artist Handler</h3>")
+func ArtistHandler(w http.ResponseWriter, r *http.Request, templates embed.FS) {
+	
+	tmpl, err := template.ParseFS(templates, "templates/index.html")
+	if err != nil {
+		http.Error(w, "Template Parse Fail", http.StatusInternalServerError)
+		return
+	}
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		http.Error(w, "Template Execute Fail", http.StatusInternalServerError)
+	}
 	/*
 		c := make(chan Error)
 		go fetchData(c)

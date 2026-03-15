@@ -23,7 +23,7 @@ var templates embed.FS
 func Handler(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
 	case "/":
-		handlers.ArtistHandler(w, r)
+		handlers.ArtistHandler(w, r, templates)
 	case "/search":
 		handlers.SearchHandler(w, r)
 	default:
