@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 )
-///
 var (
 	groupies     Groupies
 	bands        []Artist
