@@ -4,102 +4,105 @@ import (
 	"embed"
 	"fmt"
 	models "groupietrackers/models"
-	util "groupietrackers/utils"
+
+	//util "groupietrackers/utils"
 	"html/template"
 	"net/http"
-	"strconv"
-	"strings"
+	//"strconv"
+	//"strings"
 )
 
 //const portNumber = ":8080"
 
 func ArtistHandler(w http.ResponseWriter, r *http.Request, templates embed.FS) {
 
-	// tmpl, err := template.ParseFS(templates, "templates/index.html")
-	// if err != nil {
-	// 	http.Error(w, "Template Parse Fail", http.StatusInternalServerError)
-	// 	return
-	// }
-	// err = tmpl.Execute(w, nil)
-	// if err != nil {
-	// 	http.Error(w, "Template Execute Fail", http.StatusInternalServerError)
-	// }
-
-	c := make(chan models.Error)
-	go util.FetchData(c)
-	e := <-c
-	if e.Code != http.StatusOK {
-		ErrorHandler(w, e.Code, e.Message, templates)
+	tmpl, err := template.ParseFS(templates, "templates/index.html")
+	if err != nil {
+		http.Error(w, "Template Parse Fail", http.StatusInternalServerError)
 		return
 	}
-	path := r.URL.Path
-	if path != "/" {
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		http.Error(w, "Template Execute Fail", http.StatusInternalServerError)
+	}
 
-		tmpl, err := template.ParseFS(templates, "templates/index.html")
-		if err != nil {
-			ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND artist.html", templates)
+	/*
+		c := make(chan models.Error)
+		go util.FetchData(c)
+		e := <-c
+		if e.Code != http.StatusOK {
+			ErrorHandler(w, e.Code, e.Message, templates)
 			return
 		}
+		path := r.URL.Path
+		if path != "/" {
 
-		// t, e := template.ParseFiles("templates/artist.html")
-		// if e != nil {
-		// 	ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND artist.html", templates)
-		// 	return
-		// }
-
-		ids := []int{}
-		idsString := strings.TrimSpace(path[1:])
-		idsSlice := strings.Fields(idsString)
-		for _, idStr := range idsSlice {
-			id, err := strconv.Atoi(idStr)
+			tmpl, err := template.ParseFS(templates, "templates/index.html")
 			if err != nil {
+				ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND artist.html", templates)
+				return
+			}
+
+			// t, e := template.ParseFiles("templates/artist.html")
+			// if e != nil {
+			// 	ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND artist.html", templates)
+			// 	return
+			// }
+
+			ids := []int{}
+			idsString := strings.TrimSpace(path[1:])
+			idsSlice := strings.Fields(idsString)
+			for _, idStr := range idsSlice {
+				id, err := strconv.Atoi(idStr)
+				if err != nil {
+					ErrorHandler(w, http.StatusBadRequest, "400 BAD REQUEST", templates)
+					return
+				}
+				ids = append(ids, id)
+			}
+
+			bandsToDysplay := []models.Artist{}
+			for _, id := range ids {
+				for _, artist := range models.BandsInstance {
+					if artist.ID == id {
+						bandsToDysplay = append(bandsToDysplay, artist)
+					}
+				}
+			}
+
+			if len(bandsToDysplay) == 0 {
 				ErrorHandler(w, http.StatusBadRequest, "400 BAD REQUEST", templates)
 				return
 			}
-			ids = append(ids, id)
-		}
 
-		bandsToDysplay := []models.Artist{}
-		for _, id := range ids {
-			for _, artist := range models.BandsInstance {
-				if artist.ID == id {
-					bandsToDysplay = append(bandsToDysplay, artist)
-				}
+			err = tmpl.Execute(w, bandsToDysplay)
+			if err != nil {
+				ErrorHandler(w, http.StatusInternalServerError, "500 INTERNAL SERVER ERROR", templates)
 			}
-		}
 
-		if len(bandsToDysplay) == 0 {
-			ErrorHandler(w, http.StatusBadRequest, "400 BAD REQUEST", templates)
+			// e = t.Execute(w, bandsToDysplay)
+
+			// if e != nil {
+			// 	ErrorHandler(w, http.StatusInternalServerError, "500 INTERNAL SERVER ERROR", templates)
+			// 	return
+			// }
 			return
 		}
 
-		err = tmpl.Execute(w, bandsToDysplay)
+		t, err := template.ParseFiles("templates/index.html")
 		if err != nil {
-			ErrorHandler(w, http.StatusInternalServerError, "500 INTERNAL SERVER ERROR", templates)
+			ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND", templates)
 		}
 
-		// e = t.Execute(w, bandsToDysplay)
-
-		// if e != nil {
-		// 	ErrorHandler(w, http.StatusInternalServerError, "500 INTERNAL SERVER ERROR", templates)
-		// 	return
-		// }
-		return
-	}
-
-	t, err := template.ParseFiles("templates/index.html")
-	if err != nil {
-		ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND", templates)
-	}
-
-	models.DisplayInstance = util.CreateSearchMaster()
-	models.SearchObjectInstance = models.SearchObject{}
-	models.SearchObjectInstance.Artists = models.BandsInstance
-	models.SearchObjectInstance.Display = models.DisplayInstance
-	err = t.Execute(w, models.SearchObjectInstance)
-	if err != nil {
-		ErrorHandler(w, http.StatusInternalServerError, "500 SERVER ERROR", templates)
-	}
+		models.DisplayInstance = util.CreateSearchMaster()
+		models.SearchObjectInstance = models.SearchObject{}
+		models.SearchObjectInstance.Artists = models.BandsInstance
+		models.SearchObjectInstance.Display = models.DisplayInstance
+		err = t.Execute(w, models.SearchObjectInstance)
+		if err != nil {
+			ErrorHandler(w, http.StatusInternalServerError, "500 SERVER ERROR", templates)
+		}
+	*/
 
 }
 
