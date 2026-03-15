@@ -3,19 +3,10 @@ package handler
 import (
 	"embed"
 	handlers "groupietrackers/handlers"
-	models "groupietrackers/models"
 	"net/http"
 )
 
-var (
-	GroupiesInstance     models.Groupies
-	BandsInstance        []models.Artist
-	LocationsInstance    models.Locations
-	DatesInstance        models.Dates
-	RelationsInstance    models.Relations
-	SearchObjectInstance models.SearchObject
-	DisplayInstance      map[string][]int
-)
+
 
 //go:embed templates/*
 var templates embed.FS

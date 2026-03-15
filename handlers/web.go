@@ -1,95 +1,105 @@
 package handler
 
 import (
-	"fmt"
-	"html/template"
-
-	// "html/template"
-	"net/http"
-	// "strconv"
-	// "strings"
 	"embed"
+	"fmt"
 	models "groupietrackers/models"
+	util "groupietrackers/utils"
+	"html/template"
+	"net/http"
+	"strconv"
+	"strings"
 )
 
 //const portNumber = ":8080"
 
 func ArtistHandler(w http.ResponseWriter, r *http.Request, templates embed.FS) {
-	
-	tmpl, err := template.ParseFS(templates, "templates/index.html")
-	if err != nil {
-		http.Error(w, "Template Parse Fail", http.StatusInternalServerError)
+
+	// tmpl, err := template.ParseFS(templates, "templates/index.html")
+	// if err != nil {
+	// 	http.Error(w, "Template Parse Fail", http.StatusInternalServerError)
+	// 	return
+	// }
+	// err = tmpl.Execute(w, nil)
+	// if err != nil {
+	// 	http.Error(w, "Template Execute Fail", http.StatusInternalServerError)
+	// }
+
+	c := make(chan models.Error)
+	go util.FetchData(c)
+	e := <-c
+	if e.Code != http.StatusOK {
+		ErrorHandler(w, e.Code, e.Message, templates)
 		return
 	}
-	err = tmpl.Execute(w, nil)
-	if err != nil {
-		http.Error(w, "Template Execute Fail", http.StatusInternalServerError)
+	path := r.URL.Path
+	if path != "/" {
+
+		tmpl, err := template.ParseFS(templates, "templates/index.html")
+		if err != nil {
+			ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND artist.html", templates)
+			return
+		}
+
+		// t, e := template.ParseFiles("templates/artist.html")
+		// if e != nil {
+		// 	ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND artist.html", templates)
+		// 	return
+		// }
+
+		ids := []int{}
+		idsString := strings.TrimSpace(path[1:])
+		idsSlice := strings.Fields(idsString)
+		for _, idStr := range idsSlice {
+			id, err := strconv.Atoi(idStr)
+			if err != nil {
+				ErrorHandler(w, http.StatusBadRequest, "400 BAD REQUEST", templates)
+				return
+			}
+			ids = append(ids, id)
+		}
+
+		bandsToDysplay := []models.Artist{}
+		for _, id := range ids {
+			for _, artist := range models.BandsInstance {
+				if artist.ID == id {
+					bandsToDysplay = append(bandsToDysplay, artist)
+				}
+			}
+		}
+
+		if len(bandsToDysplay) == 0 {
+			ErrorHandler(w, http.StatusBadRequest, "400 BAD REQUEST", templates)
+			return
+		}
+
+		err = tmpl.Execute(w, bandsToDysplay)
+		if err != nil {
+			ErrorHandler(w, http.StatusInternalServerError, "500 INTERNAL SERVER ERROR", templates)
+		}
+
+		// e = t.Execute(w, bandsToDysplay)
+
+		// if e != nil {
+		// 	ErrorHandler(w, http.StatusInternalServerError, "500 INTERNAL SERVER ERROR", templates)
+		// 	return
+		// }
+		return
 	}
-	/*
-		c := make(chan Error)
-		go fetchData(c)
-		e := <-c
-		if e.Code != http.StatusOK {
-			errorHandler(w, e.Code, e.Message)
-			return
-		}
-		path := r.URL.Path
-		if path != "/" {
 
-			t, e := template.ParseFiles("templates/artist.html")
-			if e != nil {
-				errorHandler(w, http.StatusNotFound, "404 NOT FOUND artist.html")
-				return
-			}
+	t, err := template.ParseFiles("templates/index.html")
+	if err != nil {
+		ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND", templates)
+	}
 
-			ids := []int{}
-			idsString := strings.TrimSpace(path[1:])
-			idsSlice := strings.Fields(idsString)
-			for _, idStr := range idsSlice {
-				id, err := strconv.Atoi(idStr)
-				if err != nil {
-					errorHandler(w, http.StatusBadRequest, "400 BAD REQUEST")
-					return
-				}
-				ids = append(ids, id)
-			}
-
-			bandsToDysplay := []Artist{}
-			for _, id := range ids {
-				for _, artist := range bands {
-					if artist.ID == id {
-						bandsToDysplay = append(bandsToDysplay, artist)
-					}
-				}
-			}
-
-			if len(bandsToDysplay) == 0 {
-				errorHandler(w, http.StatusBadRequest, "400 BAD REQUEST")
-				return
-			}
-			e = t.Execute(w, bandsToDysplay)
-
-			if e != nil {
-				errorHandler(w, http.StatusInternalServerError, "500 INTERNAL SERVER ERROR")
-				return
-			}
-			return
-		}
-
-		t, err := template.ParseFiles("templates/index.html")
-		if err != nil {
-			errorHandler(w, http.StatusNotFound, "404 NOT FOUND")
-		}
-
-		display = createSearchMaster()
-		searchObject = SearchObject{}
-		searchObject.Artists = bands
-		searchObject.Display = display
-		err = t.Execute(w, searchObject)
-		if err != nil {
-			errorHandler(w, http.StatusInternalServerError, "500 SERVER ERROR")
-		}
-	*/
+	models.DisplayInstance = util.CreateSearchMaster()
+	models.SearchObjectInstance = models.SearchObject{}
+	models.SearchObjectInstance.Artists = models.BandsInstance
+	models.SearchObjectInstance.Display = models.DisplayInstance
+	err = t.Execute(w, models.SearchObjectInstance)
+	if err != nil {
+		ErrorHandler(w, http.StatusInternalServerError, "500 SERVER ERROR", templates)
+	}
 
 }
 

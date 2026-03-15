@@ -1,5 +1,15 @@
 package handler
 
+var (
+	GroupiesInstance     Groupies
+	BandsInstance        []Artist
+	LocationsInstance    Locations
+	DatesInstance        Dates
+	RelationsInstance    Relations
+	SearchObjectInstance SearchObject
+	DisplayInstance      map[string][]int
+)
+
 /*The "Groupies" struct contains "Artists", "Location", "Dates", and "Relation".
 For the "Artists" , "ArtistNames" field, we use a field tag `json:"artists"` to help Go examine which field in the JSON is mapped to this field in the struct.
 */
