@@ -23,7 +23,7 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request, templates embed.FS) {
 	path := r.URL.Path
 	if path != "/" {
 
-		tmpl, err := template.ParseFS(templates, "templates/index.html")
+		tmpl, err := template.ParseFS(templates, "templates/artist.html")
 		if err != nil {
 			ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND artist.html", templates)
 			return
