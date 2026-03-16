@@ -118,16 +118,6 @@ func SearchHandler(w http.ResponseWriter, r *http.Request, templates embed.FS) {
 			if err != nil {
 				ErrorHandler(w, http.StatusInternalServerError, "500 SERVER ERROR", templates)
 			}
-
-			// t, e := template.ParseFiles("templates/notfound.html")
-			// if e != nil {
-			// 	ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND notfound.html", templates)
-			// 	return
-			// }
-			// err := t.Execute(w, searchRequest)
-			// if err != nil {
-			// 	ErrorHandler(w, http.StatusInternalServerError, "500 SERVER ERROR", templates)
-			// }
 		}
 	
 }
