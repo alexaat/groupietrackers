@@ -2,7 +2,6 @@ package handler
 
 import (
 	"embed"
-	"fmt"
 	models "groupietrackers/models"
 	util "groupietrackers/utils"
 	"html/template"
@@ -28,12 +27,6 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request, templates embed.FS) {
 			ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND artist.html", templates)
 			return
 		}
-
-		// t, e := template.ParseFiles("templates/artist.html")
-		// if e != nil {
-		// 	ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND artist.html", templates)
-		// 	return
-		// }
 
 		ids := []int{}
 		idsString := strings.TrimSpace(path[1:])
@@ -66,13 +59,6 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request, templates embed.FS) {
 			ErrorHandler(w, http.StatusInternalServerError, "500 INTERNAL SERVER ERROR", templates)
 		}
 
-		// e = t.Execute(w, bandsToDysplay)
-
-		// if e != nil {
-		// 	ErrorHandler(w, http.StatusInternalServerError, "500 INTERNAL SERVER ERROR", templates)
-		// 	return
-		// }
-
 		return
 	}
 
@@ -93,27 +79,25 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request, templates embed.FS) {
 
 }
 
-func SearchHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "<h3>Search Handler</h3>")
-	/*
+func SearchHandler(w http.ResponseWriter, r *http.Request, templates embed.FS) {
 		if r.Method != "POST" {
-			errorHandler(w, http.StatusBadRequest, "400 BAD REQUEST")
+			ErrorHandler(w, http.StatusBadRequest, "400 BAD REQUEST", templates)
 			return
 		}
 
 		searchRequest := strings.ToLower(strings.TrimSpace(r.FormValue("artist")))
 
 		IDs := []int{}
-		for key := range display {
+		for key := range models.DisplayInstance {
 
 			keyFormat := strings.ToLower(key)
-			keyFormatNoSuffix := removeSuffixes(keyFormat)
-			searchRequestNoSuffix := removeSuffixes(searchRequest)
+			keyFormatNoSuffix := util.RemoveSuffixes(keyFormat)
+			searchRequestNoSuffix := util.RemoveSuffixes(searchRequest)
 
 			if strings.Contains(keyFormat, searchRequest) && strings.Contains(keyFormatNoSuffix, searchRequestNoSuffix) {
-				if ids, ok := display[key]; ok {
+				if ids, ok := models.DisplayInstance[key]; ok {
 					for _, id := range ids {
-						if !contains(IDs, id) {
+						if !util.Contains(IDs, id) {
 							IDs = append(IDs, id)
 						}
 					}
@@ -121,20 +105,31 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		if len(IDs) > 0 {
-			url := intsToUrl(IDs)
+			url := util.IntsToUrl(IDs)
 			http.Redirect(w, r, "/"+url, http.StatusFound)
 		} else {
-			t, e := template.ParseFiles("templates/notfound.html")
-			if e != nil {
-				errorHandler(w, http.StatusNotFound, "404 NOT FOUND notfound.html")
+
+			tmpl, err := template.ParseFS(templates, "templates/notfound.html")
+			if err != nil {
+				ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND notfound.html", templates)
 				return
 			}
-			err := t.Execute(w, searchRequest)
+			err = tmpl.Execute(w, searchRequest)
 			if err != nil {
-				errorHandler(w, http.StatusInternalServerError, "500 SERVER ERROR")
+				ErrorHandler(w, http.StatusInternalServerError, "500 SERVER ERROR", templates)
 			}
+
+			// t, e := template.ParseFiles("templates/notfound.html")
+			// if e != nil {
+			// 	ErrorHandler(w, http.StatusNotFound, "404 NOT FOUND notfound.html", templates)
+			// 	return
+			// }
+			// err := t.Execute(w, searchRequest)
+			// if err != nil {
+			// 	ErrorHandler(w, http.StatusInternalServerError, "500 SERVER ERROR", templates)
+			// }
 		}
-	*/
+	
 }
 
 func ErrorHandler(w http.ResponseWriter, code int, message string, templates embed.FS) {

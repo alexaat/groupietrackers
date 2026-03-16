@@ -139,7 +139,7 @@ func make500Error(message string) models.Error {
 	return models.Error{Code: http.StatusInternalServerError, Message: "500 INTERNAL SERVER ERROR: " + message}
 }
 
-func intsToUrl(data []int) string {
+func IntsToUrl(data []int) string {
 	url := ""
 	for _, item := range data {
 		idStr := strconv.Itoa(item)
@@ -150,7 +150,7 @@ func intsToUrl(data []int) string {
 
 func addToMap(myMap map[string][]int, key string, value int) {
 	if ids, ok := myMap[key]; ok {
-		if !contains(ids, value) {
+		if !Contains(ids, value) {
 			ids = append(ids, value)
 			myMap[key] = ids
 		}
@@ -159,7 +159,7 @@ func addToMap(myMap map[string][]int, key string, value int) {
 	}
 }
 
-func contains(slice []int, value int) bool {
+func Contains(slice []int, value int) bool {
 	for _, item := range slice {
 		if item == value {
 			return true
@@ -206,7 +206,7 @@ func constructConcerts(id int) map[string][]string {
 	return result
 }
 
-func removeSuffixes(data string) string {
+func RemoveSuffixes(data string) string {
 	data = strings.TrimSuffix(data, "- artist/band")
 	data = strings.TrimSuffix(data, "- member")
 	data = strings.TrimSuffix(data, "- creation date")
